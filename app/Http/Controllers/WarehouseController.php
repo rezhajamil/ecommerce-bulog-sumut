@@ -12,7 +12,9 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        //
+        $warehouses = Warehouse::all();
+
+        return view('dashboard.warehouse.index', compact('warehouses'));
     }
 
     /**
@@ -20,7 +22,7 @@ class WarehouseController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.warehouse.create');
     }
 
     /**
@@ -28,7 +30,31 @@ class WarehouseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'unique:warehouses,name'],
+            'phone' => ['numeric', 'nullable', 'unique:warehouses,phone'],
+            'email' => ['email', 'nullable', 'unique:warehouses,email'],
+            'address' => ['required', 'string'],
+            'maps' => ['url', 'nullable'],
+            'description' => ['string', 'nullable'],
+            'image' => ['max:4096'],
+        ]);
+
+        if ($request->image) {
+            $url = $request->image->store("warehouse");
+        }
+
+        $warehouse = Warehouse::create([
+            'name' => strtoupper($request->name),
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'maps' => $request->maps,
+            'description' => $request->description,
+            'image' => $url,
+        ]);
+
+        return redirect()->route('dashboard.warehouse.index')->with('success');
     }
 
     /**

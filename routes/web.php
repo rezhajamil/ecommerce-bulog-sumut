@@ -2,9 +2,13 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductUnitController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WarehouseController;
 use App\Models\Product;
+use App\Models\ProductBrand;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +31,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('index');
 
         Route::resource('product', ProductController::class);
+        Route::resource('warehouse', WarehouseController::class);
+        Route::resource('category', ProductCategoryController::class);
+        Route::resource('brand', ProductBrand::class);
+        Route::resource('unit', ProductUnitController::class);
     });
 });
 

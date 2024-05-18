@@ -39,7 +39,35 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string'],
+            'warehouse' => ['required'],
+            'category' => ['required'],
+            'brand' => ['required'],
+            'unit' => ['required'],
+            'description' => ['string', 'nullable'],
+            'stock' => ['string', 'numeric'],
+            'price' => ['string', 'numeric'],
+            'image' => ['required', 'max:4096'],
+        ]);
+
+        if ($request->image) {
+            $url = $request->image->store("product_images");
+        }
+
+        $product = Product::create([
+            'name' => strtoupper($request->name),
+            'warehouse' => $request->warehouse,
+            'category' => $request->category,
+            'brand' => $request->brand,
+            'unit' => $request->unit,
+            'description' => $request->description,
+            'stock' => $request->stock,
+            'price' => $request->price,
+            'image' => $url,
+        ]);
+
+        return redirect()->route('dashboard.product.index')->with('success');
     }
 
     /**

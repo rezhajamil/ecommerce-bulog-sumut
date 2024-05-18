@@ -32,6 +32,7 @@
                                                     {{ $warehouse->name }}</option>
                                             @endforeach
                                         </select>
+                                        <livwire:error-notif field='warehouse' />
                                     </label>
                                     <label class="form-control w-full" for="category">
                                         <div class="label">
@@ -46,6 +47,7 @@
                                                     {{ $category->name }}</option>
                                             @endforeach
                                         </select>
+                                        <livwire:error-notif field='category' />
                                     </label>
                                     <label class="form-control w-full" for="brand">
                                         <div class="label">
@@ -60,6 +62,7 @@
                                                     {{ $brand->name }}</option>
                                             @endforeach
                                         </select>
+                                        <livwire:error-notif field='brand' />
                                     </label>
                                     <label class="form-control col-span-full w-full" for="name">
                                         <div class="label">
@@ -67,20 +70,23 @@
                                         </div>
                                         <input type="text" placeholder="Nama Produk" name="name" id="name"
                                             class="input input-bordered input-secondary w-full" />
+                                        <livwire:error-notif field='name' />
                                     </label>
                                     <label class="form-control w-full" for="price">
                                         <div class="label">
                                             <span class="label-text">Harga (Rupiah)</span>
                                         </div>
                                         <input type="number" placeholder="Harga" name="price" id="price"
-                                            class="input input-bordered input-secondary w-full" />
+                                            value="0" class="input input-bordered input-secondary w-full" />
+                                        <livwire:error-notif field='price' />
                                     </label>
                                     <label class="form-control w-full" for="stock">
                                         <div class="label">
                                             <span class="label-text">Stok</span>
                                         </div>
                                         <input type="number" placeholder="Stok" name="stock" id="stock"
-                                            class="input input-bordered input-secondary w-full" />
+                                            value="0" class="input input-bordered input-secondary w-full" />
+                                        <livwire:error-notif field='stock' />
                                     </label>
                                     <label class="form-control w-full" for="unit">
                                         <div class="label">
@@ -95,6 +101,7 @@
                                                     {{ $unit->name }}</option>
                                             @endforeach
                                         </select>
+                                        <livwire:error-notif field='unit' />
                                     </label>
                                     <label class="form-control col-span-full" for="description">
                                         <div class="label">
@@ -102,27 +109,25 @@
                                         </div>
                                         <textarea name="description" id="description" class="textarea textarea-bordered textarea-secondary"
                                             placeholder="Deskripsi Produk"></textarea>
+                                        <livwire:error-notif field='description' />
                                     </label>
                                     <label class="form-control col-span-full w-full">
                                         <div class="label">
-                                            <span class="label-text">Gambar Produk</span>
+                                            <span class="label-text">Gambar Produk (max:4mb)</span>
                                         </div>
-                                        <input name="images" type="file" name="images[]"
-                                            class="file-input file-input-bordered file-input-secondary w-full" multiple />
+                                        <input id="image" type="file" name="image"
+                                            class="file-input file-input-bordered file-input-secondary w-full" />
+                                        <livwire:error-notif field='image' />
                                     </label>
                                 </div>
                             </div>
-                            <div class="mt-4 flex justify-end">
-                                <button
-                                    class="bg-secondary-400 hover:bg-secondary-600 focus:bg-secondary-600 w-full rounded-md px-4 py-2 font-bold text-white focus:outline-none">Submit</button>
-                            </div>
-
+                            <button class="btn btn-secondary btn-block mt-6 text-base-100" type="submit">Submit</button>
                         </div>
                     </div>
                     <div
                         class="col-span-full mt-4 w-full overflow-auto rounded-md bg-white px-6 py-4 shadow sm:col-span-1 sm:mx-0">
-                        <h4 class="align-baseline text-xl font-bold text-gray-600">Gambar Produk</h4>
-                        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2" id="image-grid">
+                        <h4 class="align-baseline text-xl font-bold text-primary">Gambar Produk</h4>
+                        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-1" id="image-grid">
                             @error('cover')
                                 <span class="block text-sm italic text-red-600">{{ $message }}</span>
                             @enderror
@@ -138,15 +143,15 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            $("#images").change(function() {
+            $("#image").change(function() {
                 previewImages(this);
-                console.log($(this).val());
                 $("#choose").show()
             });
         });
 
         function previewImages(input) {
             var preview = $('#image-grid');
+            preview.html('')
             // console.log(input.files);
 
             if (input.files) {
@@ -154,10 +159,8 @@
                     var reader = new FileReader();
                     reader.onload = function(e) {
                         var cover = Math.floor(Math.random() * 51);
-                        // console.log(e.target.result);
-                        // console.log(input.files);
                         preview.prepend(
-                            `<label for="cover${cover}" class="relative h-56 overflow-hidden border-2 rounded">
+                            `<label for="cover${cover}" class="relative h-full overflow-hidden border-2 rounded">
                                 <img src="${e.target.result}"/>
                                 
                             </label>`
