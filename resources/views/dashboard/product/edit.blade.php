@@ -8,15 +8,17 @@
                     Kembali
                 </a>
                 <h4 class="align-baseline text-xl font-bold text-primary">
-                    Tambah Data Produk
+                    Edit Data Produk
                 </h4>
 
-                <form class="grid grid-cols-1 gap-4 sm:grid-cols-2" action="{{ route('dashboard.product.store') }}"
-                    method="POST" class="" enctype="multipart/form-data">
+                <form class="grid grid-cols-1 gap-4 sm:grid-cols-2"
+                    action="{{ route('dashboard.product.update', $product->id) }}" method="POST" class=""
+                    enctype="multipart/form-data">
                     <div
                         class="col-span-full mt-4 w-full overflow-auto rounded-md bg-white px-2 py-2 shadow sm:col-span-1 sm:mx-0 sm:px-6">
                         <div>
                             @csrf
+                            @method('put')
                             <div class="mt-4 grid grid-cols-1 gap-6">
                                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                                     <label class="form-control w-full" for="warehouse">
@@ -28,7 +30,7 @@
                                             <option value="" selected disabled>Pilih Gudang</option>
                                             @foreach ($warehouses as $warehouse)
                                                 <option value="{{ $warehouse->id }}"
-                                                    {{ old('warehouse') == $warehouse->id ? 'selected' : '' }}>
+                                                    {{ old('warehouse', $product->warehouse_id) == $warehouse->id ? 'selected' : '' }}>
                                                     {{ $warehouse->name }}</option>
                                             @endforeach
                                         </select>
@@ -43,7 +45,7 @@
                                             <option value="" selected disabled>Pilih Kategori Produk</option>
                                             @foreach ($categories as $category)
                                                 <option value="{{ $category->id }}"
-                                                    {{ old('category') == $category->id ? 'selected' : '' }}>
+                                                    {{ old('category', $product->category_id) == $category->id ? 'selected' : '' }}>
                                                     {{ $category->name }}</option>
                                             @endforeach
                                         </select>
@@ -58,7 +60,7 @@
                                             <option value="" selected disabled>Pilih Merk Produk</option>
                                             @foreach ($brands as $brand)
                                                 <option value="{{ $brand->id }}"
-                                                    {{ old('brand') == $brand->id ? 'selected' : '' }}>
+                                                    {{ old('brand', $product->brand_id) == $brand->id ? 'selected' : '' }}>
                                                     {{ $brand->name }}</option>
                                             @endforeach
                                         </select>
@@ -69,7 +71,7 @@
                                             <span class="label-text">Nama Produk</span>
                                         </div>
                                         <input type="text" placeholder="Nama Produk" name="name" id="name"
-                                            value="{{ old('name') }}"
+                                            value="{{ old('name', $product->name) }}"
                                             class="input input-bordered input-secondary w-full" />
                                         <livwire:error-notif field='name' />
                                     </label>
@@ -78,7 +80,7 @@
                                             <span class="label-text">Harga (Rupiah)</span>
                                         </div>
                                         <input type="number" placeholder="0" name="price" id="price"
-                                            value="{{ old('price') }}"
+                                            value="{{ old('price', $product->price) }}"
                                             class="input input-bordered input-secondary w-full" />
                                         <livwire:error-notif field='price' />
                                     </label>
@@ -87,7 +89,7 @@
                                             <span class="label-text">Stok</span>
                                         </div>
                                         <input type="number" placeholder="0" name="stock" id="stock"
-                                            value="{{ old('stock') }}"
+                                            value="{{ old('stock', $product->stock) }}"
                                             class="input input-bordered input-secondary w-full" />
                                         <livwire:error-notif field='stock' />
                                     </label>
@@ -100,7 +102,7 @@
                                             <option value="" selected disabled>Pilih Satuan Produk</option>
                                             @foreach ($units as $unit)
                                                 <option value="{{ $unit->id }}"
-                                                    {{ old('unit') == $unit->id ? 'selected' : '' }}>
+                                                    {{ old('unit', $product->unit_id) == $unit->id ? 'selected' : '' }}>
                                                     {{ $unit->name }}</option>
                                             @endforeach
                                         </select>
@@ -111,7 +113,7 @@
                                             <span class="label-text">Deskripsi</span>
                                         </div>
                                         <textarea name="description" id="description" class="textarea textarea-bordered textarea-secondary"
-                                            placeholder="Deskripsi Produk">{!! old('description') !!}</textarea>
+                                            placeholder="Deskripsi Produk">{!! old('description', $product->description) !!}</textarea>
                                         <livwire:error-notif field='description' />
                                     </label>
                                     <label class="form-control col-span-full w-full">
@@ -131,9 +133,9 @@
                         class="col-span-full mt-4 w-full overflow-auto rounded-md bg-white px-6 py-4 shadow sm:col-span-1 sm:mx-0">
                         <h4 class="align-baseline text-xl font-bold text-primary">Gambar Produk</h4>
                         <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-1" id="image-grid">
-                            @error('cover')
-                                <span class="block text-sm italic text-red-600">{{ $message }}</span>
-                            @enderror
+                            <label for="cover${cover}" class="relative h-full overflow-hidden rounded border-2">
+                                <img src="{{ asset('storage/' . $product->image) }}" />
+                            </label>`
                         </div>
                     </div>
 

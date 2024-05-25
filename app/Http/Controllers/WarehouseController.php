@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class WarehouseController extends Controller
 {
@@ -51,7 +52,7 @@ class WarehouseController extends Controller
             'address' => $request->address,
             'maps' => $request->maps,
             'description' => $request->description,
-            'image' => $url,
+            'image' => $url ?? '',
         ]);
 
         return redirect()->route('dashboard.warehouse.index')->with('success');
@@ -70,7 +71,9 @@ class WarehouseController extends Controller
      */
     public function edit(Warehouse $warehouse)
     {
-        //
+        $warehouse = $warehouse->with(['products'])->first();
+
+        return view('dashboard.warehouse.edit', compact('warehouse'));
     }
 
     /**
@@ -78,7 +81,32 @@ class WarehouseController extends Controller
      */
     public function update(Request $request, Warehouse $warehouse)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'unique:warehouses,name,' . $warehouse->id],
+            'phone' => ['numeric', 'nullable', 'unique:warehouses,phone,' . $warehouse->id],
+            'email' => ['email', 'nullable', 'unique:warehouses,email,' . $warehouse->id],
+            'address' => ['required', 'string'],
+            'maps' => ['url', 'nullable'],
+            'description' => ['string', 'nullable'],
+            'image' => ['max:4096'],
+        ]);
+
+        if ($request->image) {
+            $url = $request->image->store("warehouse");
+            Storage::delete($warehouse->image);
+        }
+
+        $warehouse->name = strtoupper($request->name);
+        $warehouse->phone = $request->phone;
+        $warehouse->email = $request->email;
+        $warehouse->address = $request->address;
+        $warehouse->maps = $request->maps;
+        $warehouse->description = $request->description;
+        $warehouse->image = $url ?? $warehouse->image;
+
+        $warehouse->save();
+
+        return redirect()->route('dashboard.warehouse.index')->with('success');
     }
 
     /**
@@ -86,6 +114,10 @@ class WarehouseController extends Controller
      */
     public function destroy(Warehouse $warehouse)
     {
-        //
+        Storage::delete($warehouse->image);
+
+        $warehouse->delete();
+
+        return back();
     }
 }

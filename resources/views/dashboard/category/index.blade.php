@@ -4,7 +4,7 @@
     <div class="container w-full">
         <div class="flex flex-col">
             <div class="mt-4">
-                <h4 class="align-baseline text-xl font-bold text-primary">Daftar Gudang</h4>
+                <h4 class="align-baseline text-xl font-bold text-primary">Daftar Kategori Produk</h4>
 
                 <div class="flex justify-between">
                     <div class="my-2 flex flex-wrap items-end gap-4">
@@ -25,12 +25,24 @@
                             </div>
                             <select class="select select-bordered select-secondary w-fit" name="search_by" id="search_by">
                                 <option value="nama">Nama</option>
+                                <option value="deskripsi">Deskripsi</option>
+                            </select>
+                        </label>
+                        <label class="form-control w-fit max-w-xs">
+                            <div class="label">
+                                <span class="label-text">Status</span>
+                            </div>
+                            <select class="select select-bordered select-secondary w-fit" name="filter_status"
+                                id="filter_status">
+                                <option value="">All</option>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Tidak Aktif">Tidak Aktif</option>
                             </select>
                         </label>
                     </div>
-                    <a href="{{ route('dashboard.warehouse.create') }}" class="btn btn-primary mb-4 mt-2 text-base-100">
+                    <a href="{{ route('dashboard.category.create') }}" class="btn btn-primary mb-4 mt-2 text-base-100">
                         <i class="fa-solid fa-plus mr-2"></i>
-                        Data Gudang Baru
+                        Data Kategori Produk Baru
                     </a>
                 </div>
 
@@ -40,41 +52,28 @@
                             <tr class="bg-primary">
                                 <th class="p-3 text-sm font-bold uppercase text-gray-100">No</th>
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Nama</th>
-                                <th class="p-3 text-sm font-medium uppercase text-gray-100">Telepon</th>
-                                <th class="p-3 text-sm font-medium uppercase text-gray-100">Email</th>
-                                <th class="p-3 text-sm font-medium uppercase text-gray-100">Alamat</th>
-                                <th class="p-3 text-sm font-medium uppercase text-gray-100">Maps</th>
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Deskripsi</th>
-                                <th class="p-3 text-sm font-medium uppercase text-gray-100">Gambar</th>
+                                <th class="p-3 text-sm font-medium uppercase text-gray-100">Status</th>
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($warehouses as $key => $warehouse)
+                            @forelse ($categories as $key => $category)
                                 <tr class="hover:bg-gray-200">
                                     <td class="border-b p-3 font-bold text-gray-700">{{ $key + 1 }}</td>
-                                    <td class="nama p-3 text-gray-700">{{ $warehouse->name }}</td>
-                                    <td class="kategori p-3 text-gray-700">{{ $warehouse->phone }}</td>
-                                    <td class="bahan p-3 text-gray-700">{{ $warehouse->email }}</td>
-                                    <td class="bahan p-3 text-gray-700">{{ $warehouse->address }}</td>
-                                    <td class="bahan p-3 text-gray-700">
-                                        @if ($warehouse->maps)
-                                            <a href="{{ $warehouse->maps }}"
-                                                class="cursor-pointer whitespace-nowrap text-secondary underline">Lihat di
-                                                Maps</a>
-                                        @endif
-                                    </td>
-                                    <td class="deskripsi p-3 text-gray-700">{!! $warehouse->description !!}</td>
-                                    <td class="deskripsi p-3 text-gray-700">
-                                        @if ($warehouse->image)
-                                            <img src="{{ asset('storage/' . $warehouse->image) }}"
-                                                alt="{{ $warehouse->name }}" class="max-w-24">
+                                    <td class="nama p-3 text-gray-700">{{ $category->name }}</td>
+                                    <td class="deskripsi p-3 text-gray-700">{!! $category->description !!}</td>
+                                    <td class="nama p-3 text-gray-700">
+                                        @if ($category->status)
+                                            <div class="badge rounded-full bg-success p-3 text-base-100">Aktif</div>
+                                        @else
+                                            <div class="badge rounded-full bg-error p-3 text-base-100">Tidak Aktif</div>
                                         @endif
                                     </td>
                                     <td class="p-3 text-gray-700">
-                                        <a href="{{ route('dashboard.warehouse.edit', $warehouse->id) }}"
+                                        <a href="{{ route('dashboard.category.edit', $category->id) }}"
                                             class="my-1 block text-base font-semibold text-accent transition hover:text-primary">Edit</a>
-                                        <form action="{{ route('dashboard.warehouse.destroy', $warehouse->id) }}"
+                                        <form action="{{ route('dashboard.category.destroy', $category->id) }}"
                                             method="post">
                                             @csrf
                                             @method('delete')
@@ -86,7 +85,7 @@
                             @empty
                                 <tr>
                                     <td colspan="100">
-                                        <p class="p-2 text-center italic">Tidak ada data gudang</p>
+                                        <p class="p-2 text-center italic">Tidak ada data Kategori Produk</p>
                                     </td>
                                 </tr>
                             @endforelse

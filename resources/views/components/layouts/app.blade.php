@@ -68,9 +68,11 @@
     <main class="min-h-screen flex-1 overflow-auto bg-gray-200">
         {{ $slot }}
     </main>
+    <livewire:footer />
     <script type="text/javascript"
         src="https://github.com/niklasvh/html2canvas/releases/download/0.5.0-alpha1/html2canvas.js"></script>
     @yield('script')
+    @stack('scripts')
     <script>
         document.addEventListener('trix-file-accept', function(event) {
             event.preventDefault();

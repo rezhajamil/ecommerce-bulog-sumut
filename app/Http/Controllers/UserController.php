@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -61,6 +67,76 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function login_form()
+    {
+        return view('login');
+    }
+
+    public function login(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            if ($user->status == 0) {
+                throw ValidationException::withMessages([
+                    'email' => 'Akun anda tidak aktif. Hubungi administrator untuk mengaktifkan.',
+                ]);
+            }
+        } else {
+            throw ValidationException::withMessages([
+                'email' => 'Akun tidak ditemukan / Email Salah',
+            ]);
+        }
+
+        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            throw ValidationException::withMessages([
+                'email' => 'Email atau password salah',
+            ]);
+        }
+
+        $request->session()->regenerate();
+
+        return redirect()->intended();
+    }
+
+    public function register_form()
+    {
+        return view('register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string',],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone' => ['required', 'numeric', 'unique:users'],
+            'whatsapp' => ['required', 'numeric', 'unique:users'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        if ($request->avatar && $request->hasFile('avatar')) {
+            $url = $request->avatar->store('company-logo');
+        } else {
+            $url = '';
+        }
+
+        $user = User::create([
+            'name' => ucwords($request->name),
+            'address' => $request->address,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'role' => 'user',
+            'password' => Hash::make($request->password),
+        ]);
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect(RouteServiceProvider::HOME);
     }
 
     public function logout(Request $request)

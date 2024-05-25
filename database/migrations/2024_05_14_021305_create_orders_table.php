@@ -24,10 +24,10 @@ return new class extends Migration
             $table->string('receiver_address');
             $table->string('receiver_zip_code');
             $table->integer('subtotal');
-            $table->integer('shipping');
+            $table->integer('shipping')->nullable();
             $table->integer('total_amount');
             $table->string('shipping_receipt')->nullable();
-            $table->string('shipping_method');
+            $table->string('shipping_method')->nullable();
             $table->string('status');
             $table->timestamps();
         });

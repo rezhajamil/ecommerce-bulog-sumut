@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class Navbar extends Component
 {
-
+    public $notif;
 
     public function render()
     {

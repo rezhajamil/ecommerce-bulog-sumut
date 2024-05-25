@@ -61,6 +61,7 @@
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Stok</th>
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Satuan</th>
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Harga</th>
+                                <th class="p-3 text-sm font-medium uppercase text-gray-100">Gambar</th>
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Status</th>
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Action</th>
                             </tr>
@@ -69,14 +70,24 @@
                             @forelse ($products as $key => $product)
                                 <tr class="hover:bg-gray-200">
                                     <td class="border-b p-3 font-bold text-gray-700">{{ $key + 1 }}</td>
-                                    <td class="nama p-3 font-bold text-gray-700">{{ $product->name }}</td>
-                                    <td class="kategori p-3 font-bold text-gray-700">{{ $product->category->name }}</td>
-                                    <td class="harga p-3 font-bold text-gray-700">
+                                    <td class="nama p-3 text-gray-700">{{ $product->name }}</td>
+                                    <td class="kategori p-3 text-gray-700">{{ $product->category->name }}</td>
+                                    <td class="merk p-3 text-gray-700">{{ $product->brand->name }}</td>
+                                    <td class="deskripsi p-3 text-gray-700">{!! $product->description !!}</td>
+                                    <td class="satuan p-3 text-gray-700">{{ $product->unit->name }}</td>
+                                    <td class="stok p-3 text-gray-700">
+                                        {{ number_format($product->stock, 0, ',', '.') }}
+                                    </td>
+                                    <td class="harga p-3 text-gray-700">
                                         {{ number_format($product->price, 0, ',', '.') }}
                                     </td>
-                                    <td class="bahan p-3 font-bold text-gray-700">{{ $product->material }}</td>
-                                    <td class="deskripsi p-3 text-gray-700">{!! $product->description !!}</td>
-                                    <td class="status p-3 font-bold text-gray-700">
+                                    <td class="gambar p-3 text-gray-700">
+                                        @if ($warehouse->image)
+                                            <img src="{{ asset('storage/' . $warehouse->image) }}"
+                                                alt="{{ $warehouse->name }}" class="max-w-24">
+                                        @endif
+                                    </td>
+                                    <td class="status p-3 text-gray-700">
                                         @if ($product->status)
                                             <div
                                                 class="flex items-center justify-center rounded-full bg-green-200/50 px-3 py-1">
@@ -92,12 +103,10 @@
                                         @endif
                                     </td>
                                     <td class="p-3 text-gray-700">
-                                        <a href="{{ route('admin.product.show', $product->id) }}"
-                                            class="my-1 block text-base font-semibold text-teal-600 transition hover:text-teal-800">Lihat
-                                            Detail</a>
-                                        <a href="{{ route('admin.product.edit', $product->id) }}"
+                                        <a href="{{ route('dashboard.product.edit', $product->id) }}"
                                             class="my-1 block text-base font-semibold text-indigo-600 transition hover:text-indigo-800">Edit</a>
-                                        <form action="{{ route('admin.product.destroy', $product->id) }}" method="post">
+                                        <form action="{{ route('dashboard.product.destroy', $product->id) }}"
+                                            method="post">
                                             @csrf
                                             @method('delete')
                                             <button

@@ -12,7 +12,9 @@ class ProductUnitController extends Controller
      */
     public function index()
     {
-        //
+        $units = ProductUnit::all();
+
+        return view('dashboard.unit.index', compact('units'));
     }
 
     /**
@@ -20,7 +22,7 @@ class ProductUnitController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.unit.create');
     }
 
     /**
@@ -28,7 +30,18 @@ class ProductUnitController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'unique:product_units,name'],
+            'description' => ['string', 'nullable'],
+        ]);
+
+
+        $unit = ProductUnit::create([
+            'name' => ucwords($request->name),
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('dashboard.unit.index')->with('success');
     }
 
     /**
@@ -42,17 +55,29 @@ class ProductUnitController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ProductUnit $productUnit)
+    public function edit($id)
     {
-        //
+        $unit = ProductUnit::find($id);
+
+        return view('dashboard.unit.edit', compact('unit'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProductUnit $productUnit)
+    public function update(Request $request, ProductUnit $unit)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'unique:product_categories,name,' . $unit->id],
+            'description' => ['string', 'nullable'],
+        ]);
+
+        $unit->name = ucwords($request->name);
+        $unit->description = $request->description;
+
+        $unit->save();
+
+        return redirect()->route('dashboard.unit.index')->with('success');
     }
 
     /**

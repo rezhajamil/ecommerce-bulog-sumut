@@ -2,13 +2,13 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductBrandController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductUnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WarehouseController;
-use App\Models\Product;
-use App\Models\ProductBrand;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,8 +33,15 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('product', ProductController::class);
         Route::resource('warehouse', WarehouseController::class);
         Route::resource('category', ProductCategoryController::class);
-        Route::resource('brand', ProductBrand::class);
+        Route::resource('brand', ProductBrandController::class);
         Route::resource('unit', ProductUnitController::class);
+    });
+
+    Route::name('user.')->middleware(['checkUserRole:user'])->group(function () {
+        Route::get('order/', [OrderController::class, 'index'])->name('order.index');
+        Route::get('order/{product}/create', [OrderController::class, 'create'])->name('order.create');
+        Route::post('order/store', [OrderController::class, 'store'])->name('order.store');
+        Route::get('order', [OrderController::class, 'index'])->name('order.index');
     });
 });
 

@@ -57,10 +57,10 @@ class ProductController extends Controller
 
         $product = Product::create([
             'name' => strtoupper($request->name),
-            'warehouse' => $request->warehouse,
-            'category' => $request->category,
-            'brand' => $request->brand,
-            'unit' => $request->unit,
+            'warehouse_id' => $request->warehouse,
+            'category_id' => $request->category,
+            'brand_id' => $request->brand,
+            'unit_id' => $request->unit,
             'description' => $request->description,
             'stock' => $request->stock,
             'price' => $request->price,
@@ -83,7 +83,12 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $categories = ProductCategory::all();
+        $brands = ProductBrand::all();
+        $units = ProductUnit::all();
+        $warehouses = Warehouse::all();
+
+        return view('dashboard.product.edit', compact('warehouses', 'categories', 'brands', 'units', 'product'));
     }
 
     /**
@@ -91,7 +96,35 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string'],
+            'warehouse' => ['required'],
+            'category' => ['required'],
+            'brand' => ['required'],
+            'unit' => ['required'],
+            'description' => ['string', 'nullable'],
+            'stock' => ['string', 'numeric'],
+            'price' => ['string', 'numeric'],
+            'image' => ['max:4096'],
+        ]);
+
+        if ($request->image) {
+            $url = $request->image->store("product_images");
+        }
+
+        $product->name = strtoupper($request->name);
+        $product->warehouse_id = $request->warehouse;
+        $product->category_id = $request->category;
+        $product->brand_id = $request->brand;
+        $product->unit_id = $request->unit;
+        $product->description = $request->description;
+        $product->stock = $request->stock;
+        $product->price = $request->price;
+        $product->image = $url ?? $product->image;
+
+        $product->save();
+
+        return redirect()->route('dashboard.product.index')->with('success');
     }
 
     /**

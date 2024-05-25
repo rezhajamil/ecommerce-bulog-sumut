@@ -12,7 +12,9 @@ class ProductBrandController extends Controller
      */
     public function index()
     {
-        //
+        $brands = ProductBrand::all();
+
+        return view('dashboard.brand.index', compact('brands'));
     }
 
     /**
@@ -20,7 +22,7 @@ class ProductBrandController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.brand.create');
     }
 
     /**
@@ -28,7 +30,18 @@ class ProductBrandController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'unique:product_brands,name'],
+            'description' => ['string', 'nullable'],
+        ]);
+
+
+        $brand = ProductBrand::create([
+            'name' => ucwords($request->name),
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('dashboard.brand.index')->with('success');
     }
 
     /**
@@ -42,17 +55,29 @@ class ProductBrandController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ProductBrand $productBrand)
+    public function edit($id)
     {
-        //
+        $brand = ProductBrand::find($id);
+
+        return view('dashboard.brand.edit', compact('brand'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProductBrand $productBrand)
+    public function update(Request $request, ProductBrand $brand)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'unique:product_categories,name,' . $brand->id],
+            'description' => ['string', 'nullable'],
+        ]);
+
+        $brand->name = ucwords($request->name);
+        $brand->description = $request->description;
+
+        $brand->save();
+
+        return redirect()->route('dashboard.brand.index')->with('success');
     }
 
     /**

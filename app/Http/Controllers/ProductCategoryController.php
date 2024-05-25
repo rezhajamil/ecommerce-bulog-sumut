@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,9 @@ class ProductCategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = ProductCategory::all();
+
+        return view('dashboard.category.index', compact('categories'));
     }
 
     /**
@@ -20,7 +23,7 @@ class ProductCategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.category.create');
     }
 
     /**
@@ -28,7 +31,18 @@ class ProductCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'unique:product_categories,name'],
+            'description' => ['string', 'nullable'],
+        ]);
+
+
+        $category = ProductCategory::create([
+            'name' => ucwords($request->name),
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('dashboard.category.index')->with('success');
     }
 
     /**
@@ -42,24 +56,39 @@ class ProductCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ProductCategory $productCategory)
+    public function edit($id)
     {
-        //
+        $category = ProductCategory::find($id);
+
+        return view('dashboard.category.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProductCategory $productCategory)
+    public function update(Request $request, ProductCategory $category)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'unique:product_categories,name,' . $category->id],
+            'description' => ['string', 'nullable'],
+        ]);
+
+        $category->name = ucwords($request->name);
+        $category->description = $request->description;
+
+        $category->save();
+
+        return redirect()->route('dashboard.category.index')->with('success');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductCategory $productCategory)
+    public function destroy($id)
     {
-        //
+        $category = ProductCategory::find($id);
+        $category->delete();
+
+        return back();
     }
 }
