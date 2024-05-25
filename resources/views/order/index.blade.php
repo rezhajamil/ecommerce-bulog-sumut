@@ -80,7 +80,7 @@
                                         <td class="tanggal whitespace-nowrap border p-3 text-center text-gray-700">
                                             {{ date('d M Y', strtotime($order->created_at)) }}
                                         </td>
-                                        <td class="kategori border p-3 text-center text-gray-700">
+                                        <td class="nama border p-3 text-center text-gray-700">
                                             {{ $order->product->name }}</td>
                                         <td class="kategori border p-3 text-center text-gray-700">
                                             {{ $order->product->category->name }}

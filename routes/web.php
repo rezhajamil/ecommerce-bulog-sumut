@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Dashboard\OrderController as DashboardOrderController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductBrandController;
@@ -35,6 +36,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('category', ProductCategoryController::class);
         Route::resource('brand', ProductBrandController::class);
         Route::resource('unit', ProductUnitController::class);
+
+        Route::resource('order', DashboardOrderController::class);
+        Route::get('order/update_status/{order}', [DashboardOrderController::class, 'update_status'])->name('order.update_status');
     });
 
     Route::name('user.')->middleware(['checkUserRole:user'])->group(function () {

@@ -6,7 +6,7 @@
     </div>
     @auth
         <div class="flex-none">
-            <div class="dropdown dropdown-end">
+            {{-- <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-circle btn-ghost">
                     <div class="indicator">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="dropdown-end dropdown">
                 <div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost">
                     <div class="w-10 rounded-full">
