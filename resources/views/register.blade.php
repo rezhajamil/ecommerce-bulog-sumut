@@ -28,6 +28,34 @@
 </head>
 
 <body class="leading-default m-0 bg-white text-start font-sans text-base font-normal text-slate-500 antialiased">
+    <style>
+        @font-face {
+            font-family: 'Telkomsel Batik';
+            /*memberikan nama bebas untuk font*/
+            src: url("{{ asset('font/TelkomselBatikSans-Bold.otf') }}");
+            /*memanggil file font eksternalnya di folder nexa*/
+        }
+
+        .font-batik {
+            font-family: 'Telkomsel Batik';
+        }
+
+        trix-toolbar [data-trix-button-group="file-tools"] {
+            display: none;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
     <div class="z-sticky container sticky top-0">
         <div class="-mx-3 flex flex-wrap">
         </div>
@@ -65,6 +93,7 @@
                                         @csrf
                                         <div class="mb-4">
                                             <input type="text" placeholder="Nama Lengkap" name="name"
+                                                value="{{ old('name') }}"
                                                 class="focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding p-3 text-sm font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none" />
                                             @error('name')
                                                 <span class="text-sm text-red-600">{{ $message }}</span>
@@ -72,6 +101,7 @@
                                         </div>
                                         <div class="mb-4">
                                             <input type="email" placeholder="Email" name="email"
+                                                value="{{ old('email') }}"
                                                 class="focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding p-3 text-sm font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none" />
                                             @error('email')
                                                 <span class="text-sm text-red-600">{{ $message }}</span>
@@ -79,7 +109,7 @@
                                         </div>
                                         <div class="mb-4">
                                             <input type="number" placeholder="Nomor Telepon (081234567890)"
-                                                name="phone"
+                                                name="phone" value="{{ old('phone') }}"
                                                 class="focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding p-3 text-sm font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none" />
                                             @error('phone')
                                                 <span class="text-sm text-red-600">{{ $message }}</span>
@@ -87,7 +117,7 @@
                                         </div>
                                         <div class="mb-4">
                                             <input type="number" placeholder="Nomor Whatsapp (081234567890)"
-                                                name="whatsapp"
+                                                name="whatsapp" value="{{ old('whatsapp') }}"
                                                 class="focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding p-3 text-sm font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none" />
                                             @error('whatsapp')
                                                 <span class="text-sm text-red-600">{{ $message }}</span>
@@ -95,6 +125,7 @@
                                         </div>
                                         <div class="mb-4">
                                             <input type="text" placeholder="Alamat Lengkap" name="address"
+                                                value="{{ old('address') }}"
                                                 class="focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding p-3 text-sm font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none" />
                                             @error('address')
                                                 <span class="text-sm text-red-600">{{ $message }}</span>
