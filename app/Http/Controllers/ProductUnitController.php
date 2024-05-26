@@ -83,8 +83,20 @@ class ProductUnitController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductUnit $productUnit)
+    public function destroy($id)
     {
-        //
+        $productUnit = ProductUnit::find($id);
+        $productUnit->delete();
+
+        return back();
+    }
+
+    public function toggle_status($id)
+    {
+        $unit = ProductUnit::find($id);
+        $unit->status = !$unit->status;
+        $unit->save();
+
+        return back();
     }
 }

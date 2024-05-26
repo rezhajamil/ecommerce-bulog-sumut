@@ -63,21 +63,26 @@
                                     <td class="border-b p-3 font-bold text-gray-700">{{ $key + 1 }}</td>
                                     <td class="nama p-3 text-gray-700">{{ $brand->name }}</td>
                                     <td class="deskripsi p-3 text-gray-700">{!! $brand->description !!}</td>
-                                    <td class="nama p-3 text-gray-700">
+                                    <td class="status p-3 text-gray-700">
                                         @if ($brand->status)
-                                            <div class="badge rounded-full bg-success p-3 text-base-100">Aktif</div>
+                                            <div class="badge rounded-full bg-success p-3 text-base-100" status='Aktif'>
+                                                Aktif</div>
                                         @else
-                                            <div class="badge rounded-full bg-error p-3 text-base-100">Tidak Aktif</div>
+                                            <div class="badge rounded-full bg-error p-3 text-base-100"
+                                                status='Tidak Aktif''>
+                                                Tidak Aktif
+                                            </div>
                                         @endif
                                     </td>
                                     <td class="p-3 text-gray-700">
                                         <a href="{{ route('dashboard.brand.edit', $brand->id) }}"
                                             class="my-1 block text-base font-semibold text-accent transition hover:text-primary">Edit</a>
-                                        <form action="{{ route('dashboard.brand.destroy', $brand->id) }}" method="post">
+                                        <form action="{{ route('dashboard.brand.toggle_status', $brand->id) }}"
+                                            method="get">
                                             @csrf
-                                            @method('delete')
                                             <button
-                                                class="my-1 block whitespace-nowrap text-left text-base font-semibold text-error transition hover:text-error">Hapus</button>
+                                                class="my-1 block whitespace-nowrap text-left text-base font-semibold text-error transition hover:text-error">Ubah
+                                                Status</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -108,35 +113,33 @@
                 find();
             });
 
+            $("#filter_status").on("input", function() {
+                find();
+            });
+
             const find = () => {
                 let search = $("#search").val();
                 let searchBy = $('#search_by').val();
+                let filter_status = $('#filter_status').val();
                 let pattern = new RegExp(search, "i");
+
                 $(`.${searchBy}`).each(function() {
                     let label = $(this).text();
+                    let status = $(this).siblings('.status').children().first().attr('status')
                     if (pattern.test(label)) {
-                        $(this).parent().show();
+                        if (filter_status == '') {
+                            $(this).parent().show();
+                        } else {
+                            if (filter_status == status) {
+                                $(this).parent().show();
+                            } else {
+                                $(this).parent().hide();
+                            }
+                        }
                     } else {
                         $(this).parent().hide();
                     }
                 });
-            }
-
-            const filter_status = () => {
-                let filter_status = $('#filter_status').val();
-                $(`.status`).each(function() {
-                    let label = $(this).text();
-                    if (filter_status == '') {
-                        $(this).parent().parent().parent().show();
-                    } else {
-                        if (filter_status == label) {
-                            $(this).parent().parent().parent().show();
-                        } else {
-                            $(this).parent().parent().parent().hide();
-                        }
-                    }
-                });
-
             }
         })
     </script>

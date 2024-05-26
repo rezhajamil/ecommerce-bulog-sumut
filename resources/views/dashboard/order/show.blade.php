@@ -24,7 +24,7 @@
                     </div>
                     <p class="mt-4 font-semibold text-gray-400">Total : <span class="text-primary" id="total"
                             total="{{ $order->product->price }}">Rp
-                            {{ number_format($order->product->price, 0, ',', '.') }}</span>
+                            {{ number_format($order->product->price * $order->quantity, 0, ',', '.') }}</span>
                     </p>
                 </div>
             </div>

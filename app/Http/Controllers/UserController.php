@@ -66,7 +66,10 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::find($id);
+        $user->delete();
+
+        return back();
     }
 
     public function login_form()
@@ -148,5 +151,14 @@ class UserController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function toggle_status($id)
+    {
+        $user = User::find($id);
+        $user->status = !$user->status;
+        $user->save();
+
+        return back();
     }
 }

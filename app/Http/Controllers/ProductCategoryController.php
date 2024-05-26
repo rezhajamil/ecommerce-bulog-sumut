@@ -91,4 +91,13 @@ class ProductCategoryController extends Controller
 
         return back();
     }
+
+    public function toggle_status($id)
+    {
+        $category = ProductCategory::find($id);
+        $category->status = !$category->status;
+        $category->save();
+
+        return back();
+    }
 }

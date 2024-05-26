@@ -89,28 +89,24 @@
                                     </td>
                                     <td class="status p-3 text-gray-700">
                                         @if ($product->status)
-                                            <div
-                                                class="flex items-center justify-center rounded-full bg-green-200/50 px-3 py-1">
-                                                <span class="status text-sm font-semibold text-green-900">Aktif</span>
-                                            </div>
+                                            <div class="badge rounded-full bg-success p-3 text-base-100" status='Aktif'>
+                                                Aktif</div>
                                         @else
-                                            <div
-                                                class="flex items-center justify-center rounded-full bg-red-200/50 px-3 py-1">
-                                                <span
-                                                    class="status whitespace-nowrap text-sm font-semibold text-red-900">Tidak
-                                                    Aktif</span>
+                                            <div class="badge rounded-full bg-error p-3 text-base-100"
+                                                status='Tidak Aktif''>
+                                                Tidak Aktif
                                             </div>
                                         @endif
                                     </td>
                                     <td class="p-3 text-gray-700">
                                         <a href="{{ route('dashboard.product.edit', $product->id) }}"
                                             class="my-1 block text-base font-semibold text-indigo-600 transition hover:text-indigo-800">Edit</a>
-                                        <form action="{{ route('dashboard.product.destroy', $product->id) }}"
-                                            method="post">
+                                        <form action="{{ route('dashboard.product.toggle_status', $product->id) }}"
+                                            method="get">
                                             @csrf
-                                            @method('delete')
                                             <button
-                                                class="my-1 block whitespace-nowrap text-left text-base font-semibold text-red-600 transition hover:text-red-800">Hapus</button>
+                                                class="my-1 block whitespace-nowrap text-left text-base font-semibold text-error transition hover:text-error">Ubah
+                                                Status</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -142,17 +138,28 @@
             });
 
             $("#filter_status").on("input", function() {
-                filter_status();
+                find();
             });
 
             const find = () => {
                 let search = $("#search").val();
                 let searchBy = $('#search_by').val();
+                let filter_status = $('#filter_status').val();
                 let pattern = new RegExp(search, "i");
+
                 $(`.${searchBy}`).each(function() {
                     let label = $(this).text();
+                    let status = $(this).siblings('.status').children().first().attr('status')
                     if (pattern.test(label)) {
-                        $(this).parent().show();
+                        if (filter_status == '') {
+                            $(this).parent().show();
+                        } else {
+                            if (filter_status == status) {
+                                $(this).parent().show();
+                            } else {
+                                $(this).parent().hide();
+                            }
+                        }
                     } else {
                         $(this).parent().hide();
                     }

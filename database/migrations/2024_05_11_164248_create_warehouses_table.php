@@ -20,8 +20,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('maps')->nullable();
             $table->string('image')->nullable();
+            $table->boolean('status')->default(1);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

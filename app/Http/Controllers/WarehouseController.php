@@ -120,4 +120,13 @@ class WarehouseController extends Controller
 
         return back();
     }
+
+    public function toggle_status($id)
+    {
+        $warehouse = Warehouse::find($id);
+        $warehouse->status = !$warehouse->status;
+        $warehouse->save();
+
+        return back();
+    }
 }

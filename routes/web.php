@@ -39,6 +39,13 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('order', DashboardOrderController::class);
         Route::get('order/update_status/{order}', [DashboardOrderController::class, 'update_status'])->name('order.update_status');
+
+        Route::get('user/{user}/toggle_status', [UserController::class, 'toggle_status'])->name('user.toggle_status');
+        Route::get('product/{product}/toggle_status', [ProductController::class, 'toggle_status'])->name('product.toggle_status');
+        Route::get('warehouse/{warehouse}/toggle_status', [WarehouseController::class, 'toggle_status'])->name('warehouse.toggle_status');
+        Route::get('category/{category}/toggle_status', [ProductCategoryController::class, 'toggle_status'])->name('category.toggle_status');
+        Route::get('brand/{brand}/toggle_status', [ProductBrandController::class, 'toggle_status'])->name('brand.toggle_status');
+        Route::get('unit/{unit}/toggle_status', [ProductUnitController::class, 'toggle_status'])->name('unit.toggle_status');
     });
 
     Route::name('user.')->middleware(['checkUserRole:user'])->group(function () {

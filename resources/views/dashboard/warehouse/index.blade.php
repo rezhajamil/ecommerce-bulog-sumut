@@ -25,6 +25,20 @@
                             </div>
                             <select class="select select-bordered select-secondary w-fit" name="search_by" id="search_by">
                                 <option value="nama">Nama</option>
+                                <option value="telepon">Telepon</option>
+                                <option value="email">Email</option>
+                                <option value="alamat">Alamat</option>
+                            </select>
+                        </label>
+                        <label class="form-control w-fit max-w-xs">
+                            <div class="label">
+                                <span class="label-text">Status</span>
+                            </div>
+                            <select class="select select-bordered select-secondary w-fit" name="filter_status"
+                                id="filter_status">
+                                <option value="">All</option>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Tidak Aktif">Tidak Aktif</option>
                             </select>
                         </label>
                     </div>
@@ -46,6 +60,7 @@
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Maps</th>
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Deskripsi</th>
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Gambar</th>
+                                <th class="p-3 text-sm font-medium uppercase text-gray-100">Status</th>
                                 <th class="p-3 text-sm font-medium uppercase text-gray-100">Action</th>
                             </tr>
                         </thead>
@@ -54,10 +69,10 @@
                                 <tr class="hover:bg-gray-200">
                                     <td class="border-b p-3 font-bold text-gray-700">{{ $key + 1 }}</td>
                                     <td class="nama p-3 text-gray-700">{{ $warehouse->name }}</td>
-                                    <td class="kategori p-3 text-gray-700">{{ $warehouse->phone }}</td>
-                                    <td class="bahan p-3 text-gray-700">{{ $warehouse->email }}</td>
-                                    <td class="bahan p-3 text-gray-700">{{ $warehouse->address }}</td>
-                                    <td class="bahan p-3 text-gray-700">
+                                    <td class="telepon p-3 text-gray-700">{{ $warehouse->phone }}</td>
+                                    <td class="email p-3 text-gray-700">{{ $warehouse->email }}</td>
+                                    <td class="alamat p-3 text-gray-700">{{ $warehouse->address }}</td>
+                                    <td class="p-3 text-gray-700">
                                         @if ($warehouse->maps)
                                             <a href="{{ $warehouse->maps }}"
                                                 class="cursor-pointer whitespace-nowrap text-secondary underline">Lihat di
@@ -65,21 +80,32 @@
                                         @endif
                                     </td>
                                     <td class="deskripsi p-3 text-gray-700">{!! $warehouse->description !!}</td>
-                                    <td class="deskripsi p-3 text-gray-700">
+                                    <td class="p-3 text-gray-700">
                                         @if ($warehouse->image)
                                             <img src="{{ asset('storage/' . $warehouse->image) }}"
                                                 alt="{{ $warehouse->name }}" class="max-w-24">
                                         @endif
                                     </td>
+                                    <td class="status p-3 text-gray-700">
+                                        @if ($warehouse->status)
+                                            <div class="badge rounded-full bg-success p-3 text-base-100" status='Aktif'>
+                                                Aktif</div>
+                                        @else
+                                            <div class="badge rounded-full bg-error p-3 text-base-100"
+                                                status='Tidak Aktif''>
+                                                Tidak Aktif
+                                            </div>
+                                        @endif
+                                    </td>
                                     <td class="p-3 text-gray-700">
                                         <a href="{{ route('dashboard.warehouse.edit', $warehouse->id) }}"
                                             class="my-1 block text-base font-semibold text-accent transition hover:text-primary">Edit</a>
-                                        <form action="{{ route('dashboard.warehouse.destroy', $warehouse->id) }}"
-                                            method="post">
+                                        <form action="{{ route('dashboard.warehouse.toggle_status', $warehouse->id) }}"
+                                            method="get">
                                             @csrf
-                                            @method('delete')
                                             <button
-                                                class="my-1 block whitespace-nowrap text-left text-base font-semibold text-error transition hover:text-error">Hapus</button>
+                                                class="my-1 block whitespace-nowrap text-left text-base font-semibold text-error transition hover:text-error">Ubah
+                                                Status</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -110,14 +136,29 @@
                 find();
             });
 
+            $("#filter_status").on("input", function() {
+                find();
+            });
+
             const find = () => {
                 let search = $("#search").val();
                 let searchBy = $('#search_by').val();
+                let filter_status = $('#filter_status').val();
                 let pattern = new RegExp(search, "i");
+
                 $(`.${searchBy}`).each(function() {
                     let label = $(this).text();
+                    let status = $(this).siblings('.status').children().first().attr('status')
                     if (pattern.test(label)) {
-                        $(this).parent().show();
+                        if (filter_status == '') {
+                            $(this).parent().show();
+                        } else {
+                            if (filter_status == status) {
+                                $(this).parent().show();
+                            } else {
+                                $(this).parent().hide();
+                            }
+                        }
                     } else {
                         $(this).parent().hide();
                     }
@@ -127,14 +168,14 @@
             const filter_status = () => {
                 let filter_status = $('#filter_status').val();
                 $(`.status`).each(function() {
-                    let label = $(this).text();
+                    let label = $(this).attr('status');
                     if (filter_status == '') {
-                        $(this).parent().parent().parent().show();
+                        return true
                     } else {
                         if (filter_status == label) {
-                            $(this).parent().parent().parent().show();
+                            return true
                         } else {
-                            $(this).parent().parent().parent().hide();
+                            return false
                         }
                     }
                 });

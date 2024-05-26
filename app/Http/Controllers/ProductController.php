@@ -8,6 +8,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductUnit;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -26,10 +27,10 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = ProductCategory::all();
-        $brands = ProductBrand::all();
-        $units = ProductUnit::all();
-        $warehouses = Warehouse::all();
+        $categories = ProductCategory::where('status', 1)->get();
+        $brands = ProductBrand::where('status', 1)->get();
+        $units = ProductUnit::where('status', 1)->get();
+        $warehouses = Warehouse::where('status', 1)->get();
 
         return view('dashboard.product.create', compact('warehouses', 'categories', 'brands', 'units'));
     }
@@ -83,10 +84,10 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $categories = ProductCategory::all();
-        $brands = ProductBrand::all();
-        $units = ProductUnit::all();
-        $warehouses = Warehouse::all();
+        $categories = ProductCategory::where('status', 1)->get();
+        $brands = ProductBrand::where('status', 1)->get();
+        $units = ProductUnit::where('status', 1)->get();
+        $warehouses = Warehouse::where('status', 1)->get();
 
         return view('dashboard.product.edit', compact('warehouses', 'categories', 'brands', 'units', 'product'));
     }
@@ -130,8 +131,22 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        //
+        $product = Product::find($id);
+
+        Storage::delete($product->image);
+        $product->delete();
+
+        return back();
+    }
+
+    public function toggle_status($id)
+    {
+        $product = Product::find($id);
+        $product->status = !$product->status;
+        $product->save();
+
+        return back();
     }
 }

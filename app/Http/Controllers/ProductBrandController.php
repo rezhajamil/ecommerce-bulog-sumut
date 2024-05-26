@@ -83,8 +83,20 @@ class ProductBrandController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductBrand $productBrand)
+    public function destroy($id)
     {
-        //
+        $productBrand = ProductBrand::find($id);
+        $productBrand->delete();
+
+        return back();
+    }
+
+    public function toggle_status($id)
+    {
+        $brand = ProductBrand::find($id);
+        $brand->status = !$brand->status;
+        $brand->save();
+
+        return back();
     }
 }
