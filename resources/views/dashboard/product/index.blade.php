@@ -82,9 +82,9 @@
                                         {{ number_format($product->price, 0, ',', '.') }}
                                     </td>
                                     <td class="gambar p-3 text-gray-700">
-                                        @if ($warehouse->image)
-                                            <img src="{{ asset('storage/' . $warehouse->image) }}"
-                                                alt="{{ $warehouse->name }}" class="max-w-24">
+                                        @if ($product->image)
+                                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
+                                                class="max-w-24">
                                         @endif
                                     </td>
                                     <td class="status p-3 text-gray-700">
