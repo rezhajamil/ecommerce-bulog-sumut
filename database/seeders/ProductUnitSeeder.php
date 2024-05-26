@@ -19,7 +19,7 @@ class ProductUnitSeeder extends Seeder
                 'description' => 'Kilogram'
             ],
             [
-                'name' => 'Sack'
+                'name' => 'Sack',
             ],
         ];
 
