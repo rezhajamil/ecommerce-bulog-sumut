@@ -118,6 +118,8 @@ class UserController extends Controller
             'phone' => ['required', 'numeric', 'unique:users'],
             'whatsapp' => ['required', 'numeric', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
+            'security_question' => ['required', 'string',],
+            'security_question_answer' => ['required', 'string',],
         ]);
 
         if ($request->avatar && $request->hasFile('avatar')) {
@@ -133,6 +135,8 @@ class UserController extends Controller
             'email' => $request->email,
             'role' => 'user',
             'password' => Hash::make($request->password),
+            'security_question' => $request->security_question,
+            'security_question_answer' => strtolower($request->security_question_answer)
         ]);
 
         event(new Registered($user));
@@ -160,5 +164,43 @@ class UserController extends Controller
         $user->save();
 
         return back();
+    }
+
+    public function forgot_password_form(Request $request)
+    {
+        if ($request->email) {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                throw ValidationException::withMessages([
+                    'email' => 'Akun tidak ditemukan / Email Salah',
+                ]);
+            }
+        } else {
+            $user = null;
+        }
+
+        return view('forgot-password', compact('user'));
+    }
+
+    public function forgot_password(Request $request)
+    {
+        $request->validate([
+            'password' => ['required', 'confirmed', Password::defaults()],
+            'security_question_answer' => ['required', 'string',],
+        ]);
+
+        $user = User::find($request->user);
+
+        if (strtolower($request->security_question_answer) != $user->security_question_answer) {
+            throw ValidationException::withMessages([
+                'security_question_answer' => 'Jawaban Anda Salah',
+            ]);
+        }
+
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return redirect()->route('login');
     }
 }

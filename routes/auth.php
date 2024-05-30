@@ -15,6 +15,10 @@ Route::middleware('guest')->group(function () {
 
     Route::post('register', [UserController::class, 'register'])->name('user.register.store');
 
+    Route::get('forgot_password_form', [UserController::class, 'forgot_password_form'])->name('user.forgot_password.create');
+
+    Route::post('forgot_password', [UserController::class, 'forgot_password'])->name('user.forgot_password.store');
+
     // Volt::route('register', 'pages.auth.register')
     //     ->name('register');
 
