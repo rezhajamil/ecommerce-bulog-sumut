@@ -61,6 +61,9 @@ class OrderController extends Controller
             'status' => 'Menunggu Konfirmasi'
         ]);
 
+        $product->stock = $product->stock - $request->quantity;
+        $product->save();
+
         return redirect()->route('user.order.index')->with('success');
     }
 
