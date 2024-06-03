@@ -43,7 +43,7 @@
                             </label>
                         </div>
 
-                        <a href="{{ route('dashboard.product.create') }}"
+                        <a target="_blank" href="https://wa.me/6285399145364"
                             class="btn btn-success mb-4 mt-2 text-base-100">
                             <i class="fa-brands fa-whatsapp text-lg"></i>
                             Admin
